@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NFC Write & QR Code Test</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+  button { padding: 15px 30px; font-size: 18px; margin: 20px; cursor: pointer; }
+  #qrcode { margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<h1>Profile NFC & QR Test</h1>
+
+<button id="writeNFC">Write Profile URL to NFC Tag (Android Only)</button>
+
+<div id="qrcode"></div>
+<p>Scan this QR code on any device (especially iOS)</p>
+
+<script>
+  const profileUrl = "https://yourdomain.com/profile/john"; // <-- Change to your actual profile link
+
+  // Generate QR code for iOS or any device
+  QRCode.toCanvas(document.getElementById('qrcode'), profileUrl, { width: 200 }, function (error) {
+    if (error) console.error(error);
+  });
+
+  // NFC Write for Android
+  document.getElementById('writeNFC').addEventListener('click', async () => {
+    if ('NDEFWriter' in window) {
+      try {
+        const ndef = new NDEFWriter();
+        await ndef.write(profileUrl);
+        alert("NFC tag written successfully!");
+      } catch (error) {
+        alert("Failed to write NFC: " + error);
+      }
+    } else {
+      alert("Web NFC is not supported on this device/browser.");
+    }
+  });
+</script>
+
+</body>
+</html>
